@@ -69,17 +69,19 @@ pub struct ParsedContent {
     pub content: String,
     pub siblings: Vec<ParsedContent>,
     pub name: String,
+    pub begin_index: usize,
+    pub end_index: usize,
 }
 
 impl ParsedContent {
     pub fn new() -> Self {
-        ParsedContent { content: "".into(), siblings: Vec::new(), name: "".into() }
+        ParsedContent { content: "".into(), siblings: Vec::new(), name: "".into(), begin_index: 0, end_index: 0 }
     }
 }
 
 impl From<String> for ParsedContent {
     fn from(s: String) -> Self {
-        ParsedContent { content: s, siblings: Vec::new(), name: "".into() }
+        ParsedContent { content: s, siblings: Vec::new(), name: "".into(), begin_index: 0, end_index: 0 }
     }
 }
 
@@ -109,6 +111,8 @@ impl SyntaxTree {
                     let backup = c.memorize();
                     if let Some(mut res) = self.matches(c, &self.references[ref_name])? {
                         res.name = ref_name.to_string();
+                        res.begin_index = backup;
+                        res.end_index = c.memorize();
                         Ok(Some(res))
                     } else {
                         c.reset_to(backup);
@@ -135,6 +139,7 @@ impl SyntaxTree {
             },
             TreeNode::Concat(nodes) => {
                 let mut result = ParsedContent::new();
+                result.begin_index = c.memorize();
                 for node in nodes {
                     let backup = c.memorize();
                     if let Some(res) = self.matches(c, node)? {
@@ -145,6 +150,7 @@ impl SyntaxTree {
                         return Ok(None);
                     }
                 }
+                result.end_index = c.memorize();
 
                 Ok(Some(result))
             },
@@ -171,7 +177,10 @@ impl SyntaxTree {
                     }
                 }
 
-                Ok(Some(constant.to_owned().into()))
+                let mut res = ParsedContent::from(constant.to_owned());
+                res.begin_index = backup;
+                res.end_index = c.memorize();
+                Ok(Some(res))
             },
         }
     }
