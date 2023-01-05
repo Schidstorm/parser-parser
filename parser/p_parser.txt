@@ -1,0 +1,34 @@
+
+
+value = <object> | <array> | <string> | <number> | <null>
+
+object = "{" <object_entries> "}" | "{" "}"
+object_entries = <object_entry> "," <object_entries> | <object_entry>
+object_entry = <string> ":" <value>
+
+array = "[" <array_items> "]" | "[" "]"
+array_items = <value> "," <array_items> | <value>
+
+string = "\"" <string_parts>  "\""
+string_parts = <string_part> <string_parts> | <string_part>
+string_part = <string_must_escaped> | "\\" <string_escapable>
+string_escapable = "\"" | "\\" | "/" | "b" | "f" | "r" | "n" | "t" | "u" <string_unicode_codepoint>
+string_unicode_codepoint = <hex> <hex> <hex> <hex>
+hex = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "a" | "b" | "c" | "d" | "e" | "f" | "A" | "B" | "C" | "D" | "E" | "F"
+string_must_escaped = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "q" | "x" | "y" | "z" | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
+number = "-" <number_wo_sign> | <number_wo_sign>
+number_wo_sign = <number_left_part> <number_dec_part> <number_exp_part> | <number_left_part> <number_dec_part> | <number_left_part> <number_exp_part> | <number_left_part>
+number_left_part = <digits>
+number_dec_part = "." <digits>
+number_exp_part = <number_e> <number_plus_minus> <digits> | <number_e> <digits>
+number_e = "e" | "E"
+number_plus_minus = "+" | "-"
+digits = <digit> <digits> | <digit>
+one_to_nine = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+digit = <one_to_nine> | "0"
+
+null = "null"
+
+
+
